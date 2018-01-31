@@ -4,10 +4,15 @@ const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
 const {DATABASE_URL, PORT} = require ('./config');
+const authRoutes = require('./routes/authRoute');
+const recipeRoutes = require('./routes/recipeRoute');
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
 
+app.all('/');
+app.use('/auth', authRoutes);
+app.use('/recipe', recipeRoutes);
 
 let server;
 
