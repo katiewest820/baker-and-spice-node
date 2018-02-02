@@ -1,6 +1,8 @@
 const express = require ('express');
 const morgan = require ('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const {CLIENT_ORIGIN} = require('./config');
 const app = express();
 const mongoose = require('mongoose');
 const {DATABASE_URL, PORT} = require ('./config');
@@ -9,6 +11,18 @@ const recipeRoutes = require('./routes/recipeRoute');
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
+
+app.use(
+  cors({
+    origin: CLIENT_ORIGIN
+  })
+)
+
+
+
+app.get('/', (req, res) => {
+  res.sendFile(_dirname + '../baker-and-spice-react/public/index.html').status(200);
+});
 
 app.all('/');
 app.use('/auth', authRoutes);

@@ -1,15 +1,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('../config');
-const recipeSchema = require('../models/recipeModel');
-
+const {recipe, ingredientItem} = require('../models/recipeModel');
 const router = express.Router();
 
+
 router.post('/newRecipe', (req, res) => {
-  let newRecipeSchema = new recipeSchema();
+  let ingredientItems = [];
+  for(let i = 0; i < req.body.recipeIngredients.length; i++){
+    let newIngredientItemSchema = new ingredientItem();
+    newIngredientItemSchema.name = req.body.recipeIngredients[i].name;
+    newIngredientItemSchema.quantity = req.body.recipeIngredients[i].quantity;
+    ingredientItems.push(newIngredientItemSchema)
+  }
+  let newRecipeSchema = new recipe();
   newRecipeSchema.recipeTitle = req.body.recipeTitle;
-  newRecipeSchema.recipeIngredient = req.body.recipeIngredient;
-  newRecipeSchema.recipeQuantity = req.body.recipeQuantity;
+  newRecipeSchema.recipeIngredients = ingredientItems;
   newRecipeSchema.recipeInstructions = req.body.recipeInstructions;
   newRecipeSchema.save()
   .then((newRecipe) => {
@@ -26,8 +32,9 @@ router.post('/newRecipe', (req, res) => {
   });
 });
 
+//get one recipe
 router.get('/getRecipe/:recipeSlug', (req, res) => {
-  recipeSchema.findOne({recipeSlug: req.params.recipeSlug})
+  recipe.findOne({recipeSlug: req.params.recipeSlug})
   .then((recipe) => {
     console.log(recipe)
     if(!recipe){
@@ -45,6 +52,24 @@ router.get('/getRecipe/:recipeSlug', (req, res) => {
     res.status(500).json({
       message: 'Error happened when requesting recipe'
     });
+  });
+});
+
+//get all recipes
+router.get('/getAllRecipes', (req, res) => {
+  recipe.find({})
+  .then((recipes) => {
+    res.status(200).json({
+      message: 'Here are all of your recipes',
+      data: recipes
+    })
+    console.log(recipes)
+  })
+  .catch((err) => {
+    res.status(500).json({
+      message: 'Unable to retrieve recipes'
+    })
+    console.log(err)
   });
 });
 
