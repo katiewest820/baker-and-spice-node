@@ -18,8 +18,6 @@ app.use(
   })
 )
 
-
-
 app.get('/', (req, res) => {
   res.sendFile(_dirname + '../baker-and-spice-react/public/index.html').status(200);
 });
