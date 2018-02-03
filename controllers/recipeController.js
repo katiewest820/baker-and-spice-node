@@ -81,3 +81,18 @@ exports.getAllRecipes = (req, res) => {
   });
 }
 
+//Delte one recipe
+exports.deleteOneRecipe = (req, res) => {
+  recipe.deleteOne({recipeSlug: req.params.recipeSlug})
+  .then((recipe) => {
+    res.status(200).json({
+      message: `${req.params.recipeSlug} has been deleted`
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: 'Unable to delte recipe'
+      });
+    });
+  });
+}
+

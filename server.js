@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const {DATABASE_URL, PORT} = require ('./config');
 const authRoutes = require('./routes/authRoute');
 const recipeRoutes = require('./routes/recipeRoute');
+const pantryRoutes = require('./routes/pantryRoute');
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 app.all('/');
 app.use('/auth', authRoutes);
 app.use('/recipe', recipeRoutes);
+app.use('/pantry', pantryRoutes);
 
 let server;
 
