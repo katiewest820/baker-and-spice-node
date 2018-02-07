@@ -5,7 +5,7 @@ const config = require('../config');
 exports.newPantryItem = (req, res) => {
   let newPantryItem = new pantry();
   newPantryItem.item = req.body.item;
-  newPantryItem.inStock = true;
+  newPantryItem.inStock = req.body.inStock;
   newPantryItem.save()
   .then((newItem) => {
     res.status(200).json({
@@ -21,6 +21,7 @@ exports.newPantryItem = (req, res) => {
   });
 }
 
+//get all pantry items
 exports.allPantryItems = (req, res) => {
   pantry.find({})
   .then((items) => {
@@ -36,6 +37,7 @@ exports.allPantryItems = (req, res) => {
   });
 }
 
+//delete one pantry item
 exports.deletePantryItem = (req, res) => {
   pantry.findByIdAndRemove(req.params.id)
   .then((item) => {
@@ -47,6 +49,30 @@ exports.deletePantryItem = (req, res) => {
   .catch((err) => {
     res.status(500).json({
       message: 'Unable to delete pantry item'
+    });
+  });
+}
+
+//edit one pantry item
+exports.editPantryItem = (req, res) => {
+  pantry.findById(req.params.id)
+  .then((pantryItem) => {
+    let editFields = ['item', 'inStock'];
+      editFields.forEach((field) => {
+        if(field in req.body){
+          pantryItem[field] = req.body[field]
+        }
+      })  
+    pantryItem.save(); 
+    res.status(200).json({
+      message: 'Your pantry item has been updated',
+      data: pantryItem
+    });
+    console.log(pantryItem)
+  })
+  .catch((err) => {
+    res.status(500).json({
+      message: 'Unable to update your pantry item'
     });
   });
 }

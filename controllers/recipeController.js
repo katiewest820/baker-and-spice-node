@@ -1,30 +1,53 @@
 const config = require('../config');
 const {recipe, ingredientItem} = require('../models/recipeModel');
+const jimp = require('jimp');
+const multer = require('multer');
+const uuid = require('uuid');
 
-exports.middlewareOne = (req, res, next) => {
-  console.log('middlewareOne')
-  next()
+const multerOptions = {
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, next) => {
+    const isImage = file.mimetype.startsWith('image/')
+    if(isImage){
+      next(null, true)
+    }else{
+      next({message: 'File type not allowed'}, false)
+    }
+  }
+};
+
+exports.uploadImages = multer(multerOptions).single('photo')
+
+exports.resizeImages = (req, res, next) => {
+  if(!req.file){
+    next()
+    return
+  }
+  const extension = req.file.mimetype.split('/')[1];
+  req.body.recipeImages = `${uuid.v4()}.${extension}`;
+  jimp.read(req.file.buffer)
+  .then((result) => {
+    result.resize(800, jimp.AUTO)
+    result.write(`public/uploads/${req.body.recipeImages}`)
+    //TODO serve static files in server.js
+    next()
+  })
 }
-
-exports.middlewareTwo = (req, res, next) => {
-  console.log('middlewareTwo')
-  next()
-}
-
 
 //Post new recipe
 exports.createRecipe = (req, res) => {
   let ingredientItems = [];
   for(let i = 0; i < req.body.recipeIngredients.length; i++){
     let newIngredientItemSchema = new ingredientItem();
-    newIngredientItemSchema.name = req.body.recipeIngredients[i].name;
-    newIngredientItemSchema.quantity = req.body.recipeIngredients[i].quantity;
-    ingredientItems.push(newIngredientItemSchema)
+    newIngredientItemSchema.name = req.body.recipeIngredients[i].name.trim();
+    newIngredientItemSchema.quantity = req.body.recipeIngredients[i].quantity.trim();
+    ingredientItems.push(newIngredientItemSchema);
   }
   let newRecipeSchema = new recipe();
   newRecipeSchema.recipeTitle = req.body.recipeTitle;
   newRecipeSchema.recipeIngredients = ingredientItems;
   newRecipeSchema.recipeInstructions = req.body.recipeInstructions;
+  //newRecipeSchema.recipeImages = req.body.recipeImages;
   newRecipeSchema.save()
   .then((newRecipe) => {
     res.status(200).json({
@@ -47,7 +70,8 @@ exports.getOneRecipe = (req, res) => {
     console.log(recipe)
     if(!recipe){
        res.status(500).json({
-        message: 'No recipe by that name found'
+        message: 'No recipe by that name found',
+        data: null
       });
       return
     }

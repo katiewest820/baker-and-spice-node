@@ -10,7 +10,7 @@ var recipeSchema = new mongoose.Schema({
   recipeTitle: {type: String, default: ''},
   recipeSlug: String,
   recipeIngredients: [ingredientItemSchema],
-  recipeImages: [String],
+  recipeImages: String,
   recipeInstructions: String
 }); 
 

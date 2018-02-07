@@ -11,7 +11,7 @@ const recipeController = require('../controllers/recipeController');
 router.get('/getRecipe/:recipeSlug', recipeController.getOneRecipe);
 
 //Post new recipe
-router.post('/newRecipe', recipeController.middlewareOne, recipeController.middlewareTwo, recipeController.createRecipe);
+router.post('/newRecipe', recipeController.uploadImages, recipeController.resizeImages, recipeController.createRecipe);
 
 //Get all recipes
 router.get('/getAllRecipes', recipeController.getAllRecipes);
