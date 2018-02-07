@@ -5,6 +5,8 @@ const {recipe, ingredientItem} = require('../models/recipeModel');
 const router = express.Router();
 const recipeController = require('../controllers/recipeController');
 
+router.use(recipeController.checkForToken);
+
 //Get one recipe
 //TODO make search more flexible 
 //TODO make each slug individual

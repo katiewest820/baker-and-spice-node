@@ -8,6 +8,9 @@ const pantryController = require('../controllers/pantryController');
 // router.use( (req, res, next) => {
 //   if (req.method === 'OPTIONS') { res.writeHead(200); res.end(); return; }
 // })
+
+router.use(pantryController.checkForToken);
+
 //post new pantry item
 router.post('/newPantryItem', pantryController.newPantryItem);
 

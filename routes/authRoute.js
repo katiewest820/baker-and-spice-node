@@ -8,6 +8,27 @@ const userSchema = require('../models/authModel');
 const router = express.Router();
 let token;
 
+//checks for token
+// router.use((req, res, next) => {
+//   const token = req.headers.authorization || req.body.token;
+//   if (!token) {
+//     res.status(401).json({
+//       message: "unauthorized"
+//     });
+//     return;
+//   }
+//   jwt.verify(token, config, (error, decode) => {
+//     if (error) {
+//       res.status(500).json({
+//         message: "Token is not valid"
+//       });
+//       return;
+//     }
+//     req.user = decode;
+//     next();
+//   });
+// });
+
 //login route
 router.post('/login', (req, res) => {
   userSchema.findOne({userName: req.body.userName})
