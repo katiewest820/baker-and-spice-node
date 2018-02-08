@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const config = require('../config').JWT_SECRET;
+//const jwt = require('jsonwebtoken');
+//const config = require('../config').JWT_SECRET;
 const {recipe, ingredientItem} = require('../models/recipeModel');
 const jimp = require('jimp');
 const multer = require('multer');
@@ -8,6 +8,8 @@ const uuid = require('uuid');
 const multerOptions = {
   storage: multer.memoryStorage(),
   fileFilter: (req, file, next) => {
+    console.log(file)
+    console.log(req)
     const isImage = file.mimetype.startsWith('image/')
     if(isImage){
       next(null, true)
@@ -19,26 +21,6 @@ const multerOptions = {
 
 exports.uploadImages = multer(multerOptions).single('photo')
 
-exports.checkForToken = (req, res, next) => {
-  const token = req.headers.authorization || req.body.token;
-  if (!token) {
-    res.status(401).json({
-      message: "unauthorized"
-    });
-    return;
-  }
-  jwt.verify(token, config, (error, decode) => {
-    if (error) {
-      res.status(500).json({
-        message: "Token is not valid",
-        error: error
-      });
-      return;
-    }
-    req.user = decode;
-    next();
-  });
-}
 
 exports.resizeImages = (req, res, next) => {
   if(!req.file){
@@ -58,6 +40,7 @@ exports.resizeImages = (req, res, next) => {
 
 //Post new recipe
 exports.createRecipe = (req, res) => {
+
   let ingredientItems = [];
   for(let i = 0; i < req.body.recipeIngredients.length; i++){
     let newIngredientItemSchema = new ingredientItem();
@@ -70,7 +53,7 @@ exports.createRecipe = (req, res) => {
   newRecipeSchema.recipeTitle = req.body.recipeTitle;
   newRecipeSchema.recipeIngredients = ingredientItems;
   newRecipeSchema.recipeInstructions = req.body.recipeInstructions;
-  //newRecipeSchema.recipeImages = req.body.recipeImages;
+  newRecipeSchema.recipeImages = req.body.recipeImages;
   newRecipeSchema.save()
   .then((newRecipe) => {
     res.status(200).json({

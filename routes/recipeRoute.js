@@ -4,9 +4,9 @@ const config = require('../config');
 const {recipe, ingredientItem} = require('../models/recipeModel');
 const router = express.Router();
 const recipeController = require('../controllers/recipeController');
+const sharedController = require('../controllers/sharedController');
 
-router.use(recipeController.checkForToken);
-
+//router.use(sharedController.checkForToken);
 //Get one recipe
 //TODO make search more flexible 
 //TODO make each slug individual

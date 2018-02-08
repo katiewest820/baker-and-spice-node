@@ -4,12 +4,13 @@ const config = require('../config');
 const {pantry} = require ('../models/pantryModel');
 const router = express.Router();
 const pantryController = require('../controllers/pantryController');
+const sharedController = require('../controllers/sharedController');
 
 // router.use( (req, res, next) => {
 //   if (req.method === 'OPTIONS') { res.writeHead(200); res.end(); return; }
 // })
 
-router.use(pantryController.checkForToken);
+router.use(sharedController.checkForToken);
 
 //post new pantry item
 router.post('/newPantryItem', pantryController.newPantryItem);
