@@ -15,7 +15,7 @@ router.use(pantryController.checkForToken);
 router.post('/newPantryItem', pantryController.newPantryItem);
 
 //get all pantry items
-router.get('/allPantryItems', pantryController.allPantryItems);
+router.get('/allPantryItems/:userId', pantryController.allPantryItems);
 
 //delete one pantry item
 router.delete('/deletePantryItem/:id', pantryController.deletePantryItem);

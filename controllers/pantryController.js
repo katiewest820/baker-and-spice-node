@@ -28,6 +28,7 @@ exports.checkForToken = (req, res, next) => {
 exports.newPantryItem = (req, res) => {
 console.log(req.body)
   let newPantryItem = new pantry();
+  newPantryItem.userId = req.body.userId;
   newPantryItem.item = req.body.item;
   newPantryItem.inStock = req.body.inStock;
   newPantryItem.save()
@@ -47,7 +48,8 @@ console.log(req.body)
 
 //get all pantry items
 exports.allPantryItems = (req, res) => {
-  pantry.find({})
+  console.log(req.params)
+  pantry.find({userId: req.params.userId})
   .then((items) => {
     res.status(200).json({
       message: 'Here are all of your pantry items',

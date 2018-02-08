@@ -21,7 +21,6 @@ exports.uploadImages = multer(multerOptions).single('photo')
 
 exports.checkForToken = (req, res, next) => {
   const token = req.headers.authorization || req.body.token;
-  console.log(req.body)
   if (!token) {
     res.status(401).json({
       message: "unauthorized"
@@ -67,6 +66,7 @@ exports.createRecipe = (req, res) => {
     ingredientItems.push(newIngredientItemSchema);
   }
   let newRecipeSchema = new recipe();
+  newRecipeSchema.userId = req.body.userId;
   newRecipeSchema.recipeTitle = req.body.recipeTitle;
   newRecipeSchema.recipeIngredients = ingredientItems;
   newRecipeSchema.recipeInstructions = req.body.recipeInstructions;
@@ -88,7 +88,9 @@ exports.createRecipe = (req, res) => {
 
 //Get one recipe
 exports.getOneRecipe = (req, res) => {
-  recipe.findOne({recipeSlug: req.params.recipeSlug})
+  console.log(req.params.recipeSlug)
+  console.log(req.params.userId)
+  recipe.findOne({userId: req.params.userId, recipeSlug: req.params.recipeSlug})
   .then((recipe) => {
     console.log(recipe)
     if(!recipe){
@@ -112,7 +114,8 @@ exports.getOneRecipe = (req, res) => {
 
 //Get all recipes
 exports.getAllRecipes = (req, res) => {
-  recipe.find({})
+  console.log(req)
+  recipe.find({userId: req.params.userId})
   .then((recipes) => {
     res.status(200).json({
       message: 'Here are all of your recipes',

@@ -7,6 +7,7 @@ var ingredientItemSchema = new mongoose.Schema({
 });
 
 var recipeSchema = new mongoose.Schema({
+  userId: mongoose.Schema.Types.ObjectId,
   recipeTitle: {type: String, default: ''},
   recipeSlug: String,
   recipeIngredients: [ingredientItemSchema],

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 var pantrySchema = new mongoose.Schema({
+  userId: mongoose.Schema.Types.ObjectId,
   item: String,
   inStock: Boolean
 });
