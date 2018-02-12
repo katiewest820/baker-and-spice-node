@@ -2,10 +2,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config').JWT_SECRET;
 
 exports.checkForToken = (req, res, next) => {
-  console.log(req.body.token)
-  console.log(req.body.recipeTitle)
-  console.log(req.file)
-  const token = req.headers.authorization || req.body.token;
+  const token = req.headers.authorization || req.body.token || req.body.authToken;
   if (!token) {
     res.status(401).json({
       message: "unauthorized"

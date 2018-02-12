@@ -6,10 +6,6 @@ const router = express.Router();
 const pantryController = require('../controllers/pantryController');
 const sharedController = require('../controllers/sharedController');
 
-// router.use( (req, res, next) => {
-//   if (req.method === 'OPTIONS') { res.writeHead(200); res.end(); return; }
-// })
-
 router.use(sharedController.checkForToken);
 
 //post new pantry item

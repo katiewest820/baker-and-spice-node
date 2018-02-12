@@ -9,6 +9,8 @@ const {DATABASE_URL, PORT} = require ('./config');
 const authRoutes = require('./routes/authRoute');
 const recipeRoutes = require('./routes/recipeRoute');
 const pantryRoutes = require('./routes/pantryRoute');
+const apiRequest = require('./routes/apiCallRoutes');
+const path = require('path');
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
@@ -23,10 +25,16 @@ app.get('/', (req, res) => {
   res.sendFile(_dirname + '../baker-and-spice-react/public/index.html').status(200);
 });
 
+//app.use('/static', express.static(path.join('public')))
+app.use('/images', express.static(path.join(__dirname, 'public')))
+//app.use('/images', express.static(__dirname + '/public'))
+
+
 app.all('/');
 app.use('/auth', authRoutes);
 app.use('/recipe', recipeRoutes);
 app.use('/pantry', pantryRoutes);
+app.use('/apiRequest', apiRequest);
 
 let server;
 

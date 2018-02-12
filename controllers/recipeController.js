@@ -8,8 +8,6 @@ const uuid = require('uuid');
 const multerOptions = {
   storage: multer.memoryStorage(),
   fileFilter: (req, file, next) => {
-    console.log(file)
-    console.log(req)
     const isImage = file.mimetype.startsWith('image/')
     if(isImage){
       next(null, true)
@@ -19,10 +17,11 @@ const multerOptions = {
   }
 };
 
-exports.uploadImages = multer(multerOptions).single('photo')
+exports.uploadImages = multer(multerOptions).single('recipeImages')
 
 
 exports.resizeImages = (req, res, next) => {
+  console.log('resizeImages')
   if(!req.file){
     next()
     return
@@ -32,7 +31,7 @@ exports.resizeImages = (req, res, next) => {
   jimp.read(req.file.buffer)
   .then((result) => {
     result.resize(800, jimp.AUTO)
-    result.write(`public/uploads/${req.body.recipeImages}`)
+    result.write(`public/${req.body.recipeImages}`)
     //TODO serve static files in server.js
     next()
   })
@@ -40,17 +39,18 @@ exports.resizeImages = (req, res, next) => {
 
 //Post new recipe
 exports.createRecipe = (req, res) => {
-
   let ingredientItems = [];
-  for(let i = 0; i < req.body.recipeIngredients.length; i++){
+  console.log(req.body)
+  let recipeIngredients = JSON.parse(req.body.recipeIngredients)
+  for(let i = 0; i < recipeIngredients.length; i++){
     let newIngredientItemSchema = new ingredientItem();
-    newIngredientItemSchema.name = req.body.recipeIngredients[i].name.trim();
-    newIngredientItemSchema.quantity = req.body.recipeIngredients[i].quantity.trim();
+    newIngredientItemSchema.name = recipeIngredients[i].name.trim();
+    newIngredientItemSchema.quantity = recipeIngredients[i].quantity.trim();
     ingredientItems.push(newIngredientItemSchema);
   }
   let newRecipeSchema = new recipe();
   newRecipeSchema.userId = req.body.userId;
-  newRecipeSchema.recipeTitle = req.body.recipeTitle;
+  newRecipeSchema.recipeTitle = req.body.recipeTitle.trim().toLowerCase();
   newRecipeSchema.recipeIngredients = ingredientItems;
   newRecipeSchema.recipeInstructions = req.body.recipeInstructions;
   newRecipeSchema.recipeImages = req.body.recipeImages;
@@ -65,6 +65,41 @@ exports.createRecipe = (req, res) => {
     console.log(err)
     res.status(500).json({
       message: 'Recipe not saved'
+    });
+  });
+}
+
+//Edit recipe
+exports.editRecipe = (req, res) => {
+  recipe.findOne({_id: req.params.Id})
+  .then((recipe) => {
+    console.log(recipe)
+    
+    console.log(req.body.recipeIngredients)
+    let recipeIngredients = JSON.parse(req.body.recipeIngredients)
+    console.log(recipeIngredients)
+   
+    let fieldsToEdit = ['recipeTitle', 'recipeSlug', 'recipeIngredients', 'recipeInstructions', 'recipeImages']
+    fieldsToEdit.forEach((field) => {
+      if(field in req.body){
+        if(field == 'recipeIngredients'){
+          recipe[field] = recipeIngredients
+        }else{
+          recipe[field] = req.body[field]
+        }
+      }
+    })
+     console.log(recipe)
+    recipe.save()
+    res.status(200).json({
+      message: 'Edits to recipe saved',
+      data: recipe
+    });
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json({
+      message: 'Edits not saved'
     });
   });
 }
@@ -97,14 +132,28 @@ exports.getOneRecipe = (req, res) => {
 
 //Get all recipes
 exports.getAllRecipes = (req, res) => {
-  console.log(req)
   recipe.find({userId: req.params.userId})
   .then((recipes) => {
     res.status(200).json({
       message: 'Here are all of your recipes',
       data: recipes
     })
-  console.log(recipes)
+  })
+  .catch((err) => {
+    res.status(500).json({
+      message: 'Unable to retrieve recipes'
+    })
+    console.log(err)
+  });
+}
+
+exports.getRecipesBySearchTerm = (req, res) => {
+  recipe.find({userId: req.params.userId, recipeTitle: { $regex: [req.params.searchTerm] }})
+  .then((recipes) => {
+    res.status(200).json({
+      message: 'Here are all of your recipes',
+      data: recipes
+    })
   })
   .catch((err) => {
     res.status(500).json({

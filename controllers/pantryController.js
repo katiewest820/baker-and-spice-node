@@ -4,7 +4,6 @@ const pantry = require ('../models/pantryModel');
 
 //post new pantry item
 exports.newPantryItem = (req, res) => {
-console.log(req.body)
   let newPantryItem = new pantry();
   newPantryItem.userId = req.body.userId;
   newPantryItem.item = req.body.item;
