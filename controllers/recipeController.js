@@ -89,11 +89,14 @@ exports.editRecipe = (req, res) => {
         }
       }
     })
-     console.log(recipe)
-    recipe.save()
-    res.status(200).json({
-      message: 'Edits to recipe saved',
-      data: recipe
+    recipe.save().then((doc) => {
+      console.log('starting doc')
+      console.log(doc)
+      console.log('ending doc')
+      res.status(200).json({
+        message: 'Edits to recipe saved',
+        data: recipe
+      });
     });
   })
   .catch((err) => {

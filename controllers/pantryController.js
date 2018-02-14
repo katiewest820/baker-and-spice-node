@@ -1,6 +1,4 @@
 const pantry = require ('../models/pantryModel');
-//const jwt = require('jsonwebtoken');
-//const config = require('../config').JWT_SECRET;
 
 //post new pantry item
 exports.newPantryItem = (req, res) => {
