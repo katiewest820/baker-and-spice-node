@@ -47,20 +47,28 @@ router.post('/register', (req, res) => {
   userSchema.findOne({userName: req.body.userName})
   .then((user) => {
     if(user){
-      res.status(500).send('An account already exists with this username');
+      res.status(401).json({
+        message: 'An account already exists with this username'
+      });
       return
     }
     if(!req.body.userName){
       console.log(req.body)
-      res.status(500).send('username required');
+      res.status(401).json({
+        message:'username required'
+      });
       return
     }
     if(!req.body.password){
-      res.status(500).send('password required');
+      res.status(401).json({
+        message:'password required'
+      });
       return
     }
     if(!req.body.firstName || !req.body.lastName){
-      res.status(500).send('first and last name required');
+      res.status(401).json({
+        message:'first and last name required'
+      });
       return
     }
     const newUser = new userSchema();
