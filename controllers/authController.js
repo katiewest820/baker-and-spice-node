@@ -7,15 +7,15 @@ exports.login = (req, res) => {
   userSchema.findOne({userName: req.body.userName})
   .then((user) => {
     if(!req.body.userName || !req.body.password){
-      res.status(500).send('username and password required');
+      res.status(401).json({message: 'username and password required'});
       return
     }
     if(!user){
-      res.status(500).send('user does not exist');
+      res.status(401).json({message: 'user does not exist'});
       return
     }
     if(!bcrypt.compareSync(req.body.password, user.password)){
-      res.status(500).send('wrong password');
+      res.status(401).json({message: 'wrong password'});
     }
     let userToken = {
       userName: userSchema.userName,
