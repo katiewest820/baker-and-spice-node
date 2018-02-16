@@ -1,5 +1,3 @@
-//const jwt = require('jsonwebtoken');
-//const config = require('../config').JWT_SECRET;
 const {recipe, ingredientItem} = require('../models/recipeModel');
 const jimp = require('jimp');
 const multer = require('multer');
@@ -44,8 +42,8 @@ exports.createRecipe = (req, res) => {
   let recipeIngredients = JSON.parse(req.body.recipeIngredients)
   for(let i = 0; i < recipeIngredients.length; i++){
     let newIngredientItemSchema = new ingredientItem();
-    newIngredientItemSchema.name = recipeIngredients[i].name.trim();
-    newIngredientItemSchema.quantity = recipeIngredients[i].quantity.trim();
+    newIngredientItemSchema.name = recipeIngredients[i].name.trim().toLowerCase();
+    newIngredientItemSchema.quantity = recipeIngredients[i].quantity.trim().toLowerCase();
     ingredientItems.push(newIngredientItemSchema);
   }
   let newRecipeSchema = new recipe();
@@ -73,22 +71,26 @@ exports.createRecipe = (req, res) => {
 exports.editRecipe = (req, res) => {
   recipe.findOne({_id: req.params.Id})
   .then((recipe) => {
-    console.log(recipe)
-    
-    console.log(req.body.recipeIngredients)
     let recipeIngredients = JSON.parse(req.body.recipeIngredients)
+    console.log('yes')
     console.log(recipeIngredients)
+    console.log('yes')
    
     let fieldsToEdit = ['recipeTitle', 'recipeSlug', 'recipeIngredients', 'recipeInstructions', 'recipeImages']
     fieldsToEdit.forEach((field) => {
       if(field in req.body){
         if(field == 'recipeIngredients'){
+          for(let i = 0; i < recipeIngredients.length; i++){
+            recipeIngredients[i].name = recipeIngredients[i].name.trim().toLowerCase();
+            recipeIngredients[i].quantity = recipeIngredients[i].quantity.trim().toLowerCase();
+          }
           recipe[field] = recipeIngredients
         }else{
-          recipe[field] = req.body[field]
+          recipe[field] = req.body[field].trim().toLowerCase();
         }
       }
     })
+    console.log(recipe)
     recipe.save().then((doc) => {
       console.log('starting doc')
       console.log(doc)
@@ -116,7 +118,7 @@ exports.getOneRecipe = (req, res) => {
     console.log(recipe)
     if(!recipe){
        res.status(500).json({
-        message: 'No recipe by that name found',
+        message: 'Oops! Unable to find that recipe',
         data: null
       });
       return
@@ -144,7 +146,7 @@ exports.getAllRecipes = (req, res) => {
   })
   .catch((err) => {
     res.status(500).json({
-      message: 'Unable to retrieve recipes'
+      message: 'Oops! Unable to retrieve your recipes at this time'
     })
     console.log(err)
   });
@@ -160,7 +162,7 @@ exports.getRecipesBySearchTerm = (req, res) => {
   })
   .catch((err) => {
     res.status(500).json({
-      message: 'Unable to retrieve recipes'
+      message: 'No recipe by that name found'
     })
     console.log(err)
   });
@@ -175,7 +177,7 @@ exports.deleteOneRecipe = (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({
-        message: 'Unable to delte recipe'
+        message: 'Oops! Unable to delte this recipe'
       });
     });
   });

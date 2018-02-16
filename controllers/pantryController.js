@@ -4,7 +4,7 @@ const pantry = require ('../models/pantryModel');
 exports.newPantryItem = (req, res) => {
   let newPantryItem = new pantry();
   newPantryItem.userId = req.body.userId;
-  newPantryItem.item = req.body.item;
+  newPantryItem.item = req.body.item.trim().toLowerCase();
   newPantryItem.inStock = req.body.inStock;
   newPantryItem.save()
   .then((newItem) => {

@@ -7,15 +7,21 @@ exports.login = (req, res) => {
   userSchema.findOne({userName: req.body.userName})
   .then((user) => {
     if(!req.body.userName || !req.body.password){
-      res.status(500).send('username and password required');
+      res.status(401).json({
+        message:'username and password required'
+      });
       return
     }
     if(!user){
-      res.status(500).send('user does not exist');
+      res.status(401).json({
+        message:'The username you entered does not exist'
+      });
       return
     }
     if(!bcrypt.compareSync(req.body.password, user.password)){
-      res.status(500).send('wrong password');
+      res.status(401).json({
+        message:'Wrong password'
+      });
     }
     let userToken = {
       userName: userSchema.userName,
@@ -42,7 +48,7 @@ exports.register = (req, res) => {
     if(user){
       console.log('catch')
       res.status(401).json({
-        message: 'An account already exists with this username'
+        message: 'This username is taken. Please try again'
       });
       return
     }
@@ -79,12 +85,16 @@ exports.register = (req, res) => {
       newUser.save((err, user) => {
         if(err){
           console.log(err)
-          res.status(500).send('something bad happened');
+          res.status(500).json({
+            message:'something bad happened'
+          });
         }
-        res.status(200).send(newUser);
+        res.status(200).send(newUser)
       });
     }).catch((err) => {
-      res.status(500).error('something bad happened');
+      res.status(500).json({
+        message:'something bad happened'
+      });
     });
   });
 }
