@@ -23,7 +23,6 @@ exports.newPantryItem = (req, res) => {
 
 //get all pantry items
 exports.allPantryItems = (req, res) => {
-  console.log(req.params)
   pantry.find({userId: req.params.userId})
   .then((items) => {
     res.status(200).json({

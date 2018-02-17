@@ -63,10 +63,12 @@ function closeServer(){
     return new Promise((resolve, reject) => {
       console.log('closing server');
       server.close(err => {
+
         if(err) {
           return reject(err);
         }
         resolve();
+        //process.exit(0)
       });
     });
   });
