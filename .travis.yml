@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: xogrNlmmxU93slxGj8SfWbuxPvEww561+koDtYGDeRYH7/Xv3JnHMnwLWDacKK+71Fc47jejyNhFir+tARFyZc+wUHlICHiswgXeYnM8qFy5/2//A0bhtS6RstXqFcgJ1VHvV7a+C5WXVBAS7eXCX4EeESPKy1xV8qbc8OCiT6QcO+PSTR3/kCn8MR7iqBfHsG31CqM4D5wyYVk9S4hgCtRNMOrHRfXjnw7zj1XnGEnMQSUUiV7H3aQNIBFG2lUSXsxTBRtsZ+Sf2qcaUJMGBunHfFm8t9iFiauQ9wQrg4Y7ZD8JISEZSAC22qx1G9W5P65Qyilemt2A85VLryCrBPkLpZ+82euzYgJj/vTw+Lvtkh69OAYX4BSP/u/IEU5rcr+IM3iL+dSroqG4rpaRVWMGZiZyQe2kNqNINE/MX2H5bhDmO1aFqtUTLv1plpIsV5mouzhOhLeNrnXDKANEPmadSOLzfLhuTZAIIMB+lOBEWMnrj6bSG58CricbKrysZWGwy9ldxD4fREr7nROnazLkDsC4PQtUHtWI3CTHXcKj5eEDG3DCeenKJ9WzhNPz2ft2btnnDTmzkFXWVFZIUu85FsgStKQ7iuoMwL1b4OocVVlYc7i+wEuS2ZoONLjSr6vCH7OyKdt0+7FkJ974EZ7wUg5xA2UBoJJVwpadNrk=
+  app: quiet-thicket-98796
+  on:
+    repo: katiewest820/baker-and-spice-node
