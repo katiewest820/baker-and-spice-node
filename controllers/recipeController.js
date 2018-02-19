@@ -69,6 +69,8 @@ exports.createRecipe = (req, res) => {
 
 //Edit recipe
 exports.editRecipe = (req, res) => {
+  console.log('req body:')
+  console.log(req.body)
   recipe.findOne({_id: req.params.Id})
   .then((recipe) => {
     let recipeIngredients = JSON.parse(req.body.recipeIngredients)
@@ -175,10 +177,10 @@ exports.deleteOneRecipe = (req, res) => {
     res.status(200).json({
       message: `${req.params.recipeSlug} has been deleted`
     })
-    .catch((err) => {
-      res.status(500).json({
-        message: 'Oops! Unable to delte this recipe'
-      });
+  })
+  .catch((err) => {
+    res.status(500).json({
+      message: 'Oops! Unable to delte this recipe'
     });
   });
 }

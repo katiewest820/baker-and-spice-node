@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const config = require('../config');
 
 exports.login = (req, res) => {
+  console.log(req.body)
   userSchema.findOne({userName: req.body.userName})
   .then((user) => {
     if(!req.body.userName || !req.body.password){

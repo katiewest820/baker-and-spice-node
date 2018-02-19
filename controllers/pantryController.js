@@ -2,12 +2,14 @@ const pantry = require ('../models/pantryModel');
 
 //post new pantry item
 exports.newPantryItem = (req, res) => {
+  console.log(req.body)
   let newPantryItem = new pantry();
   newPantryItem.userId = req.body.userId;
   newPantryItem.item = req.body.item.trim().toLowerCase();
   newPantryItem.inStock = req.body.inStock;
   newPantryItem.save()
   .then((newItem) => {
+    console.log(newItem)
     res.status(200).json({
       message: 'Pantry Item saved',
       data: newItem
@@ -55,6 +57,7 @@ exports.deletePantryItem = (req, res) => {
 
 //edit one pantry item
 exports.editPantryItem = (req, res) => {
+  console.log(req.body)
   pantry.findById(req.params.id)
   .then((pantryItem) => {
     let editFields = ['item', 'inStock'];
