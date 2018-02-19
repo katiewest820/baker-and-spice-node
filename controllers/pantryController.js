@@ -2,14 +2,12 @@ const pantry = require ('../models/pantryModel');
 
 //post new pantry item
 exports.newPantryItem = (req, res) => {
-  console.log(req.body)
   let newPantryItem = new pantry();
   newPantryItem.userId = req.body.userId;
   newPantryItem.item = req.body.item.trim().toLowerCase();
   newPantryItem.inStock = req.body.inStock;
   newPantryItem.save()
   .then((newItem) => {
-    console.log(newItem)
     res.status(200).json({
       message: 'Pantry Item saved',
       data: newItem
@@ -19,7 +17,6 @@ exports.newPantryItem = (req, res) => {
     res.status(500).json({
       message: 'Pantry Item not saved'
     });
-    console.log(err)
   });
 }
 
@@ -57,21 +54,19 @@ exports.deletePantryItem = (req, res) => {
 
 //edit one pantry item
 exports.editPantryItem = (req, res) => {
-  console.log(req.body)
   pantry.findById(req.params.id)
   .then((pantryItem) => {
     let editFields = ['item', 'inStock'];
-      editFields.forEach((field) => {
-        if(field in req.body){
-          pantryItem[field] = req.body[field]
-        }
-      })  
+    editFields.forEach((field) => {
+      if(field in req.body){
+        pantryItem[field] = req.body[field];
+      }
+    });  
     pantryItem.save(); 
     res.status(200).json({
       message: 'Your pantry item has been updated',
       data: pantryItem
     });
-    console.log(pantryItem)
   })
   .catch((err) => {
     res.status(500).json({

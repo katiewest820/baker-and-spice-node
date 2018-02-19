@@ -7,9 +7,8 @@ const recipeController = require('../controllers/recipeController');
 const sharedController = require('../controllers/sharedController');
 
 router.use(sharedController.checkForToken);
+
 //Get one recipe
-//TODO make search more flexible 
-//TODO make each slug individual
 router.get('/getRecipe/:userId/:recipeSlug', recipeController.getOneRecipe);
 
 //Post new recipe

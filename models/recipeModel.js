@@ -16,19 +16,17 @@ var recipeSchema = new mongoose.Schema({
 }); 
 
 recipeSchema.pre('save', function(next){
-  //TODO check for same slugs in database
-  console.log('pre-save is happening')
-  this.recipeSlug = slugs(this.recipeTitle)
+  this.recipeSlug = slugs(this.recipeTitle);
   const slugRegEx = new RegExp(`^${this.recipeSlug}((-[0-9]*$)?)$`, 'i');
   this.constructor.find({recipeSlug: slugRegEx})
   .then((recipesSlug) => {
     if(recipesSlug.length){
-      this.recipeSlug = `${this.recipeSlug}-${recipesSlug.length +1}` 
+      this.recipeSlug = `${this.recipeSlug}-${recipesSlug.length +1}`;
     }
-    next()
+    next();
   })
   .catch((err) => {
-    console.log(err)
+    console.log('error occured in recipeSlug creation')
   });
 });
 

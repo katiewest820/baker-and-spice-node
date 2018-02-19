@@ -3,6 +3,7 @@ const jimp = require('jimp');
 const multer = require('multer');
 const uuid = require('uuid');
 
+//uploading image files
 const multerOptions = {
   storage: multer.memoryStorage(),
   fileFilter: (req, file, next) => {
@@ -15,31 +16,28 @@ const multerOptions = {
   }
 };
 
-exports.uploadImages = multer(multerOptions).single('recipeImages')
+exports.uploadImages = multer(multerOptions).single('recipeImages');
 
-
+//resizing and saving image
 exports.resizeImages = (req, res, next) => {
-  console.log('resizeImages')
   if(!req.file){
-    next()
-    return
+    next();
+    return;
   }
   const extension = req.file.mimetype.split('/')[1];
   req.body.recipeImages = `${uuid.v4()}.${extension}`;
   jimp.read(req.file.buffer)
   .then((result) => {
-    result.resize(800, jimp.AUTO)
-    result.write(`public/${req.body.recipeImages}`)
-    //TODO serve static files in server.js
-    next()
-  })
+    result.resize(800, jimp.AUTO);
+    result.write(`public/${req.body.recipeImages}`);
+    next();
+  });
 }
 
 //Post new recipe
 exports.createRecipe = (req, res) => {
   let ingredientItems = [];
-  console.log(req.body)
-  let recipeIngredients = JSON.parse(req.body.recipeIngredients)
+  let recipeIngredients = JSON.parse(req.body.recipeIngredients);
   for(let i = 0; i < recipeIngredients.length; i++){
     let newIngredientItemSchema = new ingredientItem();
     newIngredientItemSchema.name = recipeIngredients[i].name.trim().toLowerCase();
@@ -60,7 +58,6 @@ exports.createRecipe = (req, res) => {
     });
   })
   .catch((err) => {
-    console.log(err)
     res.status(500).json({
       message: 'Recipe not saved'
     });
@@ -69,16 +66,10 @@ exports.createRecipe = (req, res) => {
 
 //Edit recipe
 exports.editRecipe = (req, res) => {
-  console.log('req body:')
-  console.log(req.body)
   recipe.findOne({_id: req.params.Id})
   .then((recipe) => {
-    let recipeIngredients = JSON.parse(req.body.recipeIngredients)
-    console.log('yes')
-    console.log(recipeIngredients)
-    console.log('yes')
-   
-    let fieldsToEdit = ['recipeTitle', 'recipeSlug', 'recipeIngredients', 'recipeInstructions', 'recipeImages']
+    let recipeIngredients = JSON.parse(req.body.recipeIngredients);
+    let fieldsToEdit = ['recipeTitle', 'recipeSlug', 'recipeIngredients', 'recipeInstructions', 'recipeImages'];
     fieldsToEdit.forEach((field) => {
       if(field in req.body){
         if(field == 'recipeIngredients'){
@@ -86,17 +77,13 @@ exports.editRecipe = (req, res) => {
             recipeIngredients[i].name = recipeIngredients[i].name.trim().toLowerCase();
             recipeIngredients[i].quantity = recipeIngredients[i].quantity.trim().toLowerCase();
           }
-          recipe[field] = recipeIngredients
+          recipe[field] = recipeIngredients;
         }else{
           recipe[field] = req.body[field].trim().toLowerCase();
         }
       }
-    })
-    console.log(recipe)
+    });
     recipe.save().then((doc) => {
-      console.log('starting doc')
-      console.log(doc)
-      console.log('ending doc')
       res.status(200).json({
         message: 'Edits to recipe saved',
         data: recipe
@@ -104,7 +91,6 @@ exports.editRecipe = (req, res) => {
     });
   })
   .catch((err) => {
-    console.log(err)
     res.status(500).json({
       message: 'Edits not saved'
     });
@@ -113,17 +99,14 @@ exports.editRecipe = (req, res) => {
 
 //Get one recipe
 exports.getOneRecipe = (req, res) => {
-  console.log(req.params.recipeSlug)
-  console.log(req.params.userId)
   recipe.findOne({userId: req.params.userId, recipeSlug: req.params.recipeSlug})
   .then((recipe) => {
-    console.log(recipe)
     if(!recipe){
        res.status(500).json({
         message: 'Oops! Unable to find that recipe',
         data: null
       });
-      return
+      return;
     }
     res.status(200).json({
       message: 'Here is your recipe',
@@ -144,13 +127,12 @@ exports.getAllRecipes = (req, res) => {
     res.status(200).json({
       message: 'Here are all of your recipes',
       data: recipes
-    })
+    });
   })
   .catch((err) => {
     res.status(500).json({
       message: 'Oops! Unable to retrieve your recipes at this time'
-    })
-    console.log(err)
+    });
   });
 }
 
@@ -160,13 +142,12 @@ exports.getRecipesBySearchTerm = (req, res) => {
     res.status(200).json({
       message: 'Here are all of your recipes',
       data: recipes
-    })
+    });
   })
   .catch((err) => {
     res.status(500).json({
       message: 'No recipe by that name found'
-    })
-    console.log(err)
+    });
   });
 }
 
@@ -176,7 +157,7 @@ exports.deleteOneRecipe = (req, res) => {
   .then((recipe) => {
     res.status(200).json({
       message: `${req.params.recipeSlug} has been deleted`
-    })
+    });
   })
   .catch((err) => {
     res.status(500).json({

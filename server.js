@@ -36,7 +36,6 @@ function runServer(databaseUrl=DATABASE_URL, port=PORT) {
     mongoose.connect(databaseUrl);
     let db = mongoose.connection;
     db.on('error', err => {
-      console.log(err)
       mongoose.disconnect();
       reject(err);
     });
@@ -48,7 +47,7 @@ function runServer(databaseUrl=DATABASE_URL, port=PORT) {
       resolve();
     });
   });
-};
+}
 
 function closeServer(){
   return mongoose.disconnect().then(() => {
@@ -62,7 +61,7 @@ function closeServer(){
       });
     });
   });
-};
+}
 
 if (require.main === module) {
   runServer().catch(err => console.log(`internal server error: ${err}`).status(500));

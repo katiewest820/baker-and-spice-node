@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config').JWT_SECRET;
 
+//checks for token. Returns unauthorized if no token provided
 exports.checkForToken = (req, res, next) => {
   const token = req.headers.authorization || req.body.token || req.body.authToken;
   if (!token) {

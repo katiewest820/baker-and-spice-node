@@ -4,20 +4,19 @@ const bcrypt = require('bcryptjs');
 const config = require('../config');
 
 exports.login = (req, res) => {
-  console.log(req.body)
   userSchema.findOne({userName: req.body.userName})
   .then((user) => {
     if(!req.body.userName || !req.body.password){
       res.status(401).json({
         message:'username and password required'
       });
-      return
+      return;
     }
     if(!user){
       res.status(401).json({
         message:'The username you entered does not exist'
       });
-      return
+      return;
     }
     if(!bcrypt.compareSync(req.body.password, user.password)){
       res.status(401).json({
@@ -30,14 +29,13 @@ exports.login = (req, res) => {
       lastName: userSchema.lastName
     }
     token = jwt.sign(userToken, config.JWT_SECRET);
-    console.log(`token: ${token}`);
     res.status(200).json({
       message: `${user.userName} successfully logged in`,
       userId: user._id,
       token: token
     });
-  }).catch((err) => {
-    console.log(err);
+  })
+  .catch((err) => {
     res.status(500).send('Something bad happened');
   });
 }
@@ -45,54 +43,46 @@ exports.login = (req, res) => {
 exports.register = (req, res) => {
   userSchema.findOne({userName: req.body.userName})
   .then((user) => {
-    console.log(user)
     if(user){
-      console.log('catch')
       res.status(401).json({
         message: 'This username is taken. Please try again'
       });
-      return
+      return;
     }
     if(!req.body.userName){
-      console.log(req.body)
       res.status(401).json({
         message:'username required'
       });
-      return
+      return;
     }
     if(!req.body.password){
       res.status(401).json({
         message:'password required'
       });
-      return
+      return;
     }
     if(!req.body.firstName || !req.body.lastName){
       res.status(401).json({
         message:'first and last name required'
       });
-      return
+      return;
     }
     const newUser = new userSchema();
     newUser.firstName = req.body.firstname;
     newUser.lastName = req.body.lastName;
     newUser.userName = req.body.userName;
     bcrypt.hash(req.body.password, 8, (err, hash) => {
-      if(err){
-        console.log(err)
-      }else{
-        console.log(hash)
-      }
       newUser.password = hash;
       newUser.save((err, user) => {
         if(err){
-          console.log(err)
           res.status(500).json({
             message:'something bad happened'
           });
         }
-        res.status(200).send(newUser)
+        res.status(200).send(newUser);
       });
-    }).catch((err) => {
+    })
+    .catch((err) => {
       res.status(500).json({
         message:'something bad happened'
       });

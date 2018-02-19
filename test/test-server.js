@@ -19,7 +19,6 @@ let thisRecipeSlug;
 let thisRecipeId;
 
 function createTestUser(){
-  console.log('start of create test user')
   let newTestUser = {
     firstName: 'Izzy',
     lastName: 'West',
@@ -38,7 +37,6 @@ function createTestUser(){
 };
 
 function loginTestUser(){
-  console.log('in start of login')
   let loginTestUser = {
     userName: 'izzy.west123',
     password: 'password123'
@@ -48,17 +46,13 @@ function loginTestUser(){
   .set("content-type", "application/json")
   .send(loginTestUser)
   .then((res) => {
-    console.log('logged in test user')
     token = res.body.token;
     userId = res.body.userId;
-    console.log(userId)
-    console.log(token)
   })
   .catch((err) => {
     console.log('error happened in login user')
-    console.log(err)
   });
-};
+}
 
 function generateIngredientData(){
   return {
@@ -68,7 +62,6 @@ function generateIngredientData(){
 }
 
 function seedIngredientData(){
-  console.log('seeding ingredient data')
   let testIngredients = [];
   for(let i = 0; i < 3; i++){
     testIngredients.push(generateIngredientData())
@@ -78,9 +71,7 @@ function seedIngredientData(){
 
 function generateRecipeData(){
   let recipeTitle = faker.lorem.words();
-  let recipeSlug = recipeTitle.split(' ').join('-')
-  console.log(recipeTitle)
-  console.log(recipeSlug)
+  let recipeSlug = recipeTitle.split(' ').join('-');
   return {
     userId: userId,
     recipeTitle: recipeTitle,
@@ -91,10 +82,9 @@ function generateRecipeData(){
 }
 
 function seedRecipeData(){
-  console.log('seeding recipe data')
   testRecipes = [];
   for(let i = 0; i < 3; i++){
-    testRecipes.push(generateRecipeData())
+    testRecipes.push(generateRecipeData());
   }
   return recipe.insertMany(testRecipes);
 }
@@ -108,10 +98,9 @@ function generatePantryData(){
 }
 
 function seedPantryData(){
-  console.log('seeding pantry data')
   let testPantry = [];
   for(let i = 0; i < 5; i++){
-    testPantry.push(generatePantryData())
+    testPantry.push(generatePantryData());
   }
   return pantry.insertMany(testPantry);
 }
@@ -125,7 +114,6 @@ function tearDownDb() {
 describe('Trip test API resources', function() {
   before(function(done) {
     this.timeout(100000)
-    console.log('in before')
     runServer(TESTING_DATABASE_URL).then(() => {
       Promise.resolve(createTestUser()).then(() => {
         Promise.resolve(loginTestUser()).then(() => {
@@ -140,7 +128,7 @@ describe('Trip test API resources', function() {
   after(function(){
     tearDownDb();
     closeServer();
-    return
+    return;
   }); 
   
   describe('GET all pantryItems', function(){
@@ -150,10 +138,8 @@ describe('Trip test API resources', function() {
       .get(`/pantry/allPantryItems/${userId}`)
       .set('authorization', token)
       .then((res) => {
-        console.log(res.body.data)
         res.should.have.status(200);
         res.body.data.length.should.equal(5);
-        console.log('got here')
       })
       .catch((err)=> {
         console.log('an error happened in get pantry items')
@@ -175,14 +161,11 @@ describe('Trip test API resources', function() {
       .set('content-type', 'application/json')
       .send(JSON.stringify(newPantryItem))
       .then((res) => {
-        console.log('yessss')
-        console.log(res.body)
-        res.should.have.status(200)
+        res.should.have.status(200);
         pantryItemId = res.body.data._id;
-        console.log(pantryItemId)
-        res.body.data.item.should.equal(newPantryItem.item)
-        res.body.data.inStock.should.equal(newPantryItem.inStock)
-        res.body.data.userId.should.equal(userId)
+        res.body.data.item.should.equal(newPantryItem.item);
+        res.body.data.inStock.should.equal(newPantryItem.inStock);
+        res.body.data.userId.should.equal(userId);
       })
       .catch((err) => {
         console.log('an error happened in post pantry item')
@@ -201,11 +184,10 @@ describe('Trip test API resources', function() {
       .set('authorization', token)
       .send(editedPantryItem)
       .then((res) => {
-        console.log(res.body)
-        res.should.have.status(200)
-        res.body.data.item.should.equal(editedPantryItem.item)
-        res.body.data.inStock.should.equal(editedPantryItem.inStock)
-        res.body.data._id.should.equal(pantryItemId)
+        res.should.have.status(200);
+        res.body.data.item.should.equal(editedPantryItem.item);
+        res.body.data.inStock.should.equal(editedPantryItem.inStock);
+        res.body.data._id.should.equal(pantryItemId);
       })
       .catch((err) => {
         console.log('an error happened in put pantry item')
@@ -219,9 +201,8 @@ describe('Trip test API resources', function() {
       .delete(`/pantry/deletePantryItem/${pantryItemId}`)
       .set('authorization', token)
       .then((res) => {
-        console.log(res.body)
-        res.should.have.status(200)
-        res.body.data._id.should.equal(pantryItemId)
+        res.should.have.status(200);
+        res.body.data._id.should.equal(pantryItemId);
       })
       .catch((err) => {
         console.log('an error happened in delete pantry item')
@@ -235,11 +216,9 @@ describe('Trip test API resources', function() {
       .get(`/recipe/getAllRecipes/${userId}`)
       .set('authorization', token)
       .then((res) => {
-        console.log(res.body)
-        thisRecipeSlug = res.body.data[0].recipeSlug
-        console.log(thisRecipeSlug)
-        res.should.have.status(200)
-        res.body.data.length.should.equal(3)
+        thisRecipeSlug = res.body.data[0].recipeSlug;
+        res.should.have.status(200);
+        res.body.data.length.should.equal(3);
       })
       .catch((err) => {
         console.log('an error happened in get all of recipes')
@@ -253,9 +232,8 @@ describe('Trip test API resources', function() {
       .get(`/recipe/getRecipe/${userId}/${thisRecipeSlug}`)
       .set('authorization', token)
       .then((res) => {
-        console.log(res.body)
-        res.should.have.status(200)
-        res.body.data.recipeSlug.should.equal(thisRecipeSlug)
+        res.should.have.status(200);
+        res.body.data.recipeSlug.should.equal(thisRecipeSlug);
       })
       .catch((err) => {
         console.log('an error happened in get one recipe')
@@ -273,7 +251,7 @@ describe('Trip test API resources', function() {
         {
           name: 'apples',   
           quantity:'10'
-        }]
+        }];
       let newRecipe = {
         recipeTitle: 'new awesome title',
         recipeInstructions: 'This is the best ever. you are awesome.',
@@ -285,16 +263,13 @@ describe('Trip test API resources', function() {
       .set('authorization', token)
       .send(newRecipe)
       .then((res) => {
-        console.log(res.body)
         thisRecipeId = res.body.data._id;
-        console.log(thisRecipeId)
-        res.should.have.status(200)
-        res.body.data.recipeTitle.should.equal(newRecipe.recipeTitle)
-        res.body.data.recipeInstructions.should.equal(newRecipe.recipeInstructions)
+        res.should.have.status(200);
+        res.body.data.recipeTitle.should.equal(newRecipe.recipeTitle);
+        res.body.data.recipeInstructions.should.equal(newRecipe.recipeInstructions);
       })
       .catch((err) => {
         console.log('an error happened in post recipe')
-        console.log(err)
       });
     });
   });
@@ -309,7 +284,7 @@ describe('Trip test API resources', function() {
         {
           name: 'new apples',   
           quantity:'100'
-        }]
+        }];
       let editThisRecipe = {
         recipeTitle: 'even newer and awesomer recipe title',
         recipeInstructions: 'this is even better and more awesome. yea yea yea',
@@ -320,10 +295,9 @@ describe('Trip test API resources', function() {
       .set('authorization', token)
       .send(editThisRecipe)
       .then((res) => {
-        console.log(res.body)
-        res.should.have.status(200)
-        res.body.data.recipeTitle.should.equal(editThisRecipe.recipeTitle)
-        res.body.data.recipeInstructions.should.equal(editThisRecipe.recipeInstructions)
+        res.should.have.status(200);
+        res.body.data.recipeTitle.should.equal(editThisRecipe.recipeTitle);
+        res.body.data.recipeInstructions.should.equal(editThisRecipe.recipeInstructions);
       })
       .catch((err) => {
         console.log('an error happened in edit recipe')
@@ -337,9 +311,8 @@ describe('Trip test API resources', function() {
       .delete(`/recipe/deleteOne/${thisRecipeSlug}`)
       .set('authorization', token)
       .then((res) => {
-        console.log(res.body)
-        res.should.have.status(200)
-        res.body.message.should.equal(`${thisRecipeSlug} has been deleted`)
+        res.should.have.status(200);
+        res.body.message.should.equal(`${thisRecipeSlug} has been deleted`);
       })
       .catch((err) => {
         console.log('an error happened in delete recipe')
