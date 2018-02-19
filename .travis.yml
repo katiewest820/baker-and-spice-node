@@ -4,6 +4,6 @@ deploy:
   provider: heroku
   api_key:
     secure: ulvW/CetVflJjazUI1MkwIQVlkBTDWdtOwNnvX/CHvdwn3bQ+U49N8fJx9tM0rfPgOTueQLZ6lew7O3YoNqLItpM1yWeFvaFgSRcp7b3W7i2HNZj086S42tICNoGYd2oop70/8hPOJwZSOP5o2QYOr44NaG4u/WKPITenmesqeFemu0ha4aPLg+owKDw7S0UXkfzHr0leUUWH54PycqbEmv0YyB477d5e+FyCy4E8ZY4m0G4JOBx7atDu1lw63x2qoKEhgSDsw4R+IiAh6xM7Z8EsJghCMJM7veJTNT/DWsQ/XhQo06q55Hu269O67+HkFQlV5JhJg7kspqWQpiG/IJdguEjCEVr92xHdnknpvTm/Tsu81z2sNwilIZFsrLmKO0hB4gc5TriA6G22mBaVYQSTSwGijTfxIhyT1uUJ4aUwYV6pk83ZnyYQpjnf/5T6h6LisHCvSoYbU0xnTt0QeeJjNUs0703cka9Zy7yGLBimExGVgS/bbRQWPWYFZ/5+EddKSRBMOxhvaPy7EW+puc4lk5DoUsE4GH93KVsaftyH2VeuR+6KyWga/L8t6EgtX+eIP3LbeMu7plTAOpcPxNxrAUN2jg9rQa9XPornuxQ0QbMm+ccfK9eoyRquX2vMIUz060gMsX1lecO8NPiruntOiWVpOFA3mwVvADql+o=
-  app: baker-and-spice-node
+  app: quiet-thicket-98796
   on:
     repo: katiewest820/baker-and-spice-node
