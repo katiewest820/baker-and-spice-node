@@ -2,6 +2,8 @@ const {recipe, ingredientItem} = require('../models/recipeModel');
 const jimp = require('jimp');
 const multer = require('multer');
 const uuid = require('uuid');
+const cloudinary = require('cloudinary');
+const cloudinaryStorage = require('multer-storage-cloudinary');
 
 //uploading image files
 const multerOptions = {
@@ -18,19 +20,22 @@ const multerOptions = {
 
 exports.uploadImages = multer(multerOptions).single('recipeImages');
 
-//resizing and saving image
-exports.resizeImages = (req, res, next) => {
+//saving image to cloudinary
+cloudinary.config({ 
+  cloud_name: 'doezp37xg', 
+  api_key: '964288955197663', 
+  api_secret: 'GshQJPyZDCkUvptoJzSBZXeWK5s' 
+});
+
+exports.uploadToCloudinary = (req, res, next) => {
   if(!req.file){
     next();
     return;
   }
-  const extension = req.file.mimetype.split('/')[1];
-  req.body.recipeImages = `${uuid.v4()}.${extension}`;
-  jimp.read(req.file.buffer)
-  .then((result) => {
-    result.resize(800, jimp.AUTO);
-    result.write(`public/${req.body.recipeImages}`);
-    next();
+  let baseData = new Buffer(req.file.buffer).toString('base64');
+  cloudinary.v2.uploader.upload('data:image/png;base64,' + baseData, function (error, result){ 
+    req.body.recipeImages = result.secure_url;
+    next() 
   });
 }
 

@@ -12,7 +12,7 @@ router.use(sharedController.checkForToken);
 router.get('/getRecipe/:userId/:recipeSlug', recipeController.getOneRecipe);
 
 //Post new recipe
-router.post('/newRecipe', recipeController.uploadImages, recipeController.resizeImages, recipeController.createRecipe);
+router.post('/newRecipe', recipeController.uploadImages, recipeController.uploadToCloudinary, recipeController.createRecipe);
 
 //Get all recipes
 router.get('/getAllRecipes/:userId', recipeController.getAllRecipes);
@@ -24,6 +24,6 @@ router.get('/getRecipesBySearchTerm/:userId/:searchTerm', recipeController.getRe
 router.delete('/deleteOne/:recipeSlug', recipeController.deleteOneRecipe);
 
 //Edit recipe
-router.put('/editRecipe/:Id', recipeController.uploadImages, recipeController.resizeImages, recipeController.editRecipe);
+router.put('/editRecipe/:Id', recipeController.uploadImages, recipeController.uploadToCloudinary, recipeController.editRecipe);
 
 module.exports = router;
